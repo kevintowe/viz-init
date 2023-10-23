@@ -1,0 +1,50 @@
+{
+  "name": "manifest",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/manifest/src",
+  "projectType": "library",
+  "targets": {
+    "transform": {
+      "command": "echo 'hello world'"
+    },
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/manifest",
+        "main": "libs/manifest/src/index.ts",
+        "tsConfig": "libs/manifest/tsconfig.lib.json",
+        "assets": ["libs/manifest/*.md", "libs/manifest/src/lib/*.json"]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs manifest {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/manifest/**/*.ts",
+          "libs/manifest/package.json"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/manifest/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}
